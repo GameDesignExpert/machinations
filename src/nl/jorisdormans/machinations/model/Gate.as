@@ -51,6 +51,11 @@ package nl.jorisdormans.machinations.model
 		
 		override public function fire():void 
 		{
+			var l:int = inputs.length; 
+			for (var i:int; i < l; i++) {
+				if (inputs[i] is StateConnection && (inputs[i] as StateConnection).inhibited) return; 
+			}	
+
 			super.fire();
 			if (resourceInputCount == 0) {
 				satisfy();

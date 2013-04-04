@@ -81,6 +81,10 @@ package nl.jorisdormans.machinations.model
 					_state = value;
 					if (end is MachinationsConnection) (end as MachinationsConnection).label.modifyMultiplier((_state/interval - previous/interval)*label.value);
 					break;
+				case Label.TYPE_CHANGE_CAPACITY:
+					_state = value;
+					if (end is Pool) (end as Pool).modifyCapacity((_state/interval - previous/interval)*label.value);
+					break;
 				case Label.TYPE_CHANGE_INTERVAL:
 					_state = value;
 					if (end is MachinationsConnection) (end as MachinationsConnection).label.modifyInterval((_state/interval - previous/interval)*label.value);

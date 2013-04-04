@@ -25,7 +25,7 @@ package
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
 			
-			//TODO: Ranges for activators don't seem to work
+			//DONE: Ranges for activators don't seem to work
 			
 			//DONE: Remove white text from generated SVGs
 			//DONE: Modulo doesn't seem to work in register formulae

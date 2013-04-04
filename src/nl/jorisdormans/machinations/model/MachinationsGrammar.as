@@ -9,7 +9,7 @@ package nl.jorisdormans.machinations.model
 	 */
 	public class MachinationsGrammar extends GraphGrammar
 	{
-		public static var version:String = "v4.03";
+		public static var version:String = "v4.04";
 		public static var fontSize:Number = 10;
 		public static var fontWeight:Number = 2;
 		

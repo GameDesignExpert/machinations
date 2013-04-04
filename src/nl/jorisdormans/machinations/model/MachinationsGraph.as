@@ -229,11 +229,13 @@ package nl.jorisdormans.machinations.model
 			}
 			fireIntervalCounter = fireInterval;
 			
-			//check calculated registers
-			trace("PREPARING CALCULATED");
-			for (i = 0; i < l; i++) {
-				if (elements[i] is Register) (elements[i] as Register).prepareCalculated();
-			}
+			//check calculated registers NO LONGER REQUIRED?
+			//trace("PREPARING CALCULATED");
+			//for (i = 0; i < l; i++) {
+			//	if (elements[i] is Register) (elements[i] as Register).prepareCalculated();
+			//}
+			
+			
 			//check dynamic probabilities
 			for (i = 0; i < l; i++) {
 				if (elements[i] is Gate) (elements[i] as Gate).checkDynamicProbabilities();

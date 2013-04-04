@@ -122,7 +122,7 @@ package nl.jorisdormans.machinations.view
 			topPanel = new PhantomPanel(topBorder, 2, 2, _controlWidth + editPanelWidth - 2, topPanelHeight);
 			runButton = new PhantomButton("Run (R)", run, topPanel, 4, 4);
 			runButton.glyph = PhantomGlyph.PLAY;
-			new PhantomLabel("Machinations "+MachinationsGrammar.version+" by Joris Dormans (2009-2012), www.jorisdormans.nl/machinations", topPanel, 100, 6, 450);
+			new PhantomLabel("Machinations "+MachinationsGrammar.version+" by Joris Dormans (2009-2013), www.jorisdormans.nl/machinations", topPanel, 100, 6, 450);
 			
 			editPanel = new PhantomBorder(parent, _controlWidth + x, y, editPanelWidth + 2, _controlHeight);
 			var px:int = 0;
@@ -992,6 +992,25 @@ package nl.jorisdormans.machinations.view
 			
 			//generate xml
 			var xml:XML = <graph/>;
+			
+			xml.@version = MachinationsGrammar.version;
+			xml.@name = graph.name;
+			xml.@author = graph.author;
+			xml.@interval = graph.fireInterval;
+			xml.@timeMode = graph.timeMode;
+			xml.@distributionMode = graph.distributionMode;
+			xml.@speed = graph.resourceSpeed;
+			xml.@actions = graph.actionsPerTurn;
+			xml.@dice = graph.dice;
+			xml.@skill = graph.skill;
+			xml.@strategy = graph.strategy;
+			xml.@multiplayer = graph.multiplayer;
+			xml.@width = graph.width;
+			xml.@height = graph.height;
+			xml.@numberOfRuns = graph.numberOfRuns;
+			xml.@visibleRuns = graph.visibleRuns;
+			xml.@colorCoding = graph.colorCoding;
+			
 			for (i = 0; i < l; i++) {
 				if (_elements[i].selected) {
 					xml.appendChild(_elements[i].element.generateXML());
@@ -1048,11 +1067,11 @@ package nl.jorisdormans.machinations.view
 						case "startingResources":
 							if (_elements[i].element is Pool) (_elements[i].element as Pool).startingResources = value;
 							break;
-						case "maxResources":
-							if (_elements[i].element is Pool) (_elements[i].element as Pool).maxResources = value;
+						case "capacity":
+							if (_elements[i].element is Pool) (_elements[i].element as Pool).capacity = value;
 							break;
-						case "tokenLimit":
-							if (_elements[i].element is Pool) (_elements[i].element as Pool).tokenLimit = value;
+						case "displayCapacity":
+							if (_elements[i].element is Pool) (_elements[i].element as Pool).displayCapacity = value;
 							break;
 						case "gateType":
 							if (_elements[i].element is Gate) (_elements[i].element as Gate).gateType = string;

@@ -10,13 +10,14 @@ package nl.jorisdormans.machinations.model
 	public class Pool extends Source
 	{
 		private var _startingResources:int;
-		public var maxResources:int
+		public var capacity:int
+		private var startingCapacity:int;
 		public var resources:Vector.<Resource>;
 		public var overPulled:Boolean;
 		public var pulls:int = 0;
 		private var shortage:int;
 		public static const TOKEN_LIMIT:int = 25;
-		public var tokenLimit:int = TOKEN_LIMIT;
+		public var displayCapacity:int = TOKEN_LIMIT;
 		
 		
 		
@@ -24,7 +25,7 @@ package nl.jorisdormans.machinations.model
 		{
 			resources = new Vector.<Resource>();
 			startingResources = 0;
-			maxResources = -1;
+			capacity = -1;
 			super();
 			activationMode = MODE_PASSIVE;	
 			
@@ -34,8 +35,8 @@ package nl.jorisdormans.machinations.model
 		{
 			var xml:XML = super.generateXML();
 			xml.@startingResources = startingResources;
-			xml.@maxResources = maxResources;
-			if (tokenLimit != TOKEN_LIMIT) xml.@tokenLimit = tokenLimit;
+			xml.@capacity = capacity;
+			if (displayCapacity != TOKEN_LIMIT) xml.@displayCapacity = displayCapacity;
 			return xml;
 		}
 		
@@ -43,8 +44,10 @@ package nl.jorisdormans.machinations.model
 		{
 			super.readXML(xml);
 			startingResources = xml.@startingResources;
-			maxResources = xml.@maxResources;
-			if (xml.@tokenLimit.length() > 0) tokenLimit = parseInt(xml.@tokenLimit);
+			if (xml.@maxResources.length() > 0) capacity = xml.@maxResources;
+			else capacity = xml.@capacity;
+			if (xml.@tokenLimit.length() > 0) displayCapacity = parseInt(xml.@tokenLimit);
+			if (xml.@displayCapacity.length() > 0) displayCapacity = parseInt(xml.@displayCapacity);
 		}
 		
 		public function get startingResources():int { return _startingResources; }
@@ -81,6 +84,8 @@ package nl.jorisdormans.machinations.model
 				if (pullMode == PULL_MODE_PULL_ANY) pullMode = PULL_MODE_PUSH_ANY;
 				if (pullMode == PULL_MODE_PULL_ALL) pullMode = PULL_MODE_PUSH_ALL;
 			}
+			
+			startingCapacity = capacity;
 		}
 		
 		public function modify(delta:int):void {
@@ -132,6 +137,7 @@ package nl.jorisdormans.machinations.model
 		override public function stop():void 
 		{
 			super.stop();
+			capacity = startingCapacity;
 			resources.splice(0, resources.length);
 			for (var i:int = 0; i < startingResources; i++) resources.push(new Resource(resourceColor, 0));
 			shortage = 0;
@@ -215,7 +221,7 @@ package nl.jorisdormans.machinations.model
 		
 		override public function receiveResource(color:uint, flow:ResourceConnection):void 
 		{
-			if (maxResources >= 0 && resources.length >= maxResources) return;
+			if (capacity >= 0 && resources.length >= capacity) return;
 			if (shortage > 0) {
 				shortage--;
 			} else {
@@ -387,6 +393,20 @@ package nl.jorisdormans.machinations.model
 						}
 					}
 				}
+			}
+		}
+		
+		public function modifyCapacity(delta:int):void {
+			capacity += delta;
+			if (capacity < resources.length) {
+				var m:int = Math.max(capacity, 0);
+				var r:int = resources.length - m;
+				for (var i:int = m; i < m + r; i++)
+				{
+					changeState(resources[i].color, -1);				
+				}
+				resources.splice(m, r);
+				if (doEvents) dispatchEvent(new GraphEvent(GraphEvent.ELEMENT_CHANGE, this));
 			}
 		}
 		

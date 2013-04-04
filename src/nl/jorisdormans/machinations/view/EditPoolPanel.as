@@ -28,13 +28,13 @@ package nl.jorisdormans.machinations.view
 			number.max = 9999;
 			number.onChange = changeValue;
 			controlY += 28;
-			new PhantomLabel("Max", this, labelX, controlY);
+			new PhantomLabel("Capacity", this, labelX, controlY);
 			max = new PhantomEditNumberBox(0, 0, 1, this, controlX, controlY, controlNW); 
 			max.min = -1;
 			max.max = 9999;
 			max.onChange = changeValue;
 			controlY += 28;
-			new PhantomLabel("Display Limit", this, labelX, controlY);
+			new PhantomLabel("Display Cap.", this, labelX, controlY);
 			tokenLimit = new PhantomEditNumberBox(0, 0, 5, this, controlX, controlY, controlNW); 
 			tokenLimit.min = -1;
 			tokenLimit.max = 25;
@@ -49,8 +49,8 @@ package nl.jorisdormans.machinations.view
 			super.element = value;
 			if (value is Pool) {
 				number.value = (value as Pool).startingResources;
-				max.value = (value as Pool).maxResources;
-				tokenLimit.value = (value as Pool).tokenLimit;
+				max.value = (value as Pool).capacity;
+				tokenLimit.value = (value as Pool).displayCapacity;
 			}
 		}
 		
@@ -59,9 +59,9 @@ package nl.jorisdormans.machinations.view
 			if (sender == number) {
 				view.setValue("startingResources", null, number.value);
 			} else if (sender == max) {
-				view.setValue("maxResources", null, max.value);
+				view.setValue("capacity", null, max.value);
 			} else if (sender == tokenLimit) {
-				view.setValue("tokenLimit", null, tokenLimit.value);
+				view.setValue("displayCapacity", null, tokenLimit.value);
 			} else {
 				super.changeValue(sender);
 			}

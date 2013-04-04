@@ -77,9 +77,9 @@ package nl.jorisdormans.machinations.view
 		public function set element(value:GraphElement):void 
 		{
 			_element = value;
-			if (_element is Pool) panelCaption.caption = "Pool";
 			if (_element is Gate) panelCaption.caption = "Gate";
 			if (_element is Source) panelCaption.caption = "Source";
+			if (_element is Pool) panelCaption.caption = "Pool";
 			if (_element is Drain) panelCaption.caption = "Drain";
 			if (_element is Converter) panelCaption.caption = "Converter";
 			if (_element is Trader) panelCaption.caption = "Trader";

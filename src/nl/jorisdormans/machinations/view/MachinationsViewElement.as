@@ -555,7 +555,7 @@ package nl.jorisdormans.machinations.view
 		{
 			var c:uint;
 			var l:int = pool.resourceCount;
-			if (l>=0 && l <= pool.tokenLimit) {
+			if (l>=0 && l <= pool.displayCapacity) {
 				var x:Number = -12;
 				var y:Number = -2;
 				for (var i:int = 0; i < l; i++) {
@@ -595,7 +595,7 @@ package nl.jorisdormans.machinations.view
 		private function drawResourcesToSVG(pool:Pool, svg:XML):void
 		{
 			var l:int = pool.resources.length;
-			if (l>=0 && l <= pool.tokenLimit) {
+			if (l>=0 && l <= pool.displayCapacity) {
 				var x:Number = -12;
 				var y:Number = -2;
 				for (var i:int = 0; i < l; i++) {

@@ -17,6 +17,8 @@ package nl.jorisdormans.machinations.model
 		public var valueStep:int;
 		public static const LIMIT:int = 9999;
 		public var interaction:int = 0;
+		public var hasTriggers:Boolean = false;
+		public var isTriggered:Boolean = false;
 		
 		private var postFix:Array;
 		private var values:Array;
@@ -44,6 +46,20 @@ package nl.jorisdormans.machinations.model
 		
 		override public function fire():void 
 		{
+			if (hasTriggers && isTriggered && interaction==0) {
+				var r:Number = Math.random() * 100;
+				for (i = 0; i < this.outputs.length; i++) {
+					if (this.outputs[i] is StateConnection && (this.outputs[i] as StateConnection).label.type == Label.TYPE_TRIGGER) {
+						if (r < _value) 
+							(this.outputs[i] as StateConnection).fire();
+					}
+					if (this.outputs[i] is StateConnection && (this.outputs[i] as StateConnection).label.type == Label.TYPE_REVERSE_TRIGGER) {
+						if (r >= _value) 
+							(this.outputs[i] as StateConnection).reverseFire();
+					}
+				}
+			}
+			
 			//implement changes
 			if (interaction!=0) {
 				if (doEvents) dispatchEvent(new GraphEvent(GraphEvent.ELEMENT_CHANGE));
@@ -61,7 +77,27 @@ package nl.jorisdormans.machinations.model
 				
 				
 			}
+			
 			super.fire();
+		}
+		
+		override public function autoFire():void 
+		{
+			super.autoFire();
+			if (hasTriggers && !isTriggered) {
+				var r:Number = Math.random() * 100;
+				for (var i:int = 0; i < this.outputs.length; i++) {
+					if (this.outputs[i] is StateConnection && (this.outputs[i] as StateConnection).label.type == Label.TYPE_TRIGGER) {
+						if (r < _value) 
+							(this.outputs[i] as StateConnection).fire();
+					}
+					if (this.outputs[i] is StateConnection && (this.outputs[i] as StateConnection).label.type == Label.TYPE_REVERSE_TRIGGER) {
+						if (r >= _value) 
+							(this.outputs[i] as StateConnection).reverseFire();
+					}
+				}
+
+			}
 		}
 		
 		public function get value():int
@@ -148,7 +184,6 @@ package nl.jorisdormans.machinations.model
 			}
 			
 			newValue = Math.min(Math.max(newValue, minValue), maxValue);
-			//trace("calculating", newValue, _value);
 			
 			if (newValue != _value) {
 				var delta:int = newValue-_value;
@@ -187,14 +222,33 @@ package nl.jorisdormans.machinations.model
 				calculated = true;
 				_value = startValue;
 				if (doEvents) dispatchEvent(new GraphEvent(GraphEvent.ELEMENT_CHANGE));
-			} else {
+			} else if (!calculated) {
 				_value = 0;
+			}
+			
+			hasTriggers = false;
+			for (i = 0; i < this.outputs.length; i++) {
+				if (this.outputs[i] is StateConnection && ((this.outputs[i] as StateConnection).label.type == Label.TYPE_TRIGGER || (this.outputs[i] as StateConnection).label.type == Label.TYPE_REVERSE_TRIGGER)) {
+					hasTriggers = true;
+					break;
+				}
+			}
+			
+			isTriggered = false;
+			for (i = 0; i < this.inputs.length; i++) {
+				if (this.inputs[i] is StateConnection && ((this.inputs[i] as StateConnection).label.type == Label.TYPE_TRIGGER || (this.inputs[i] as StateConnection).label.type == Label.TYPE_REVERSE_TRIGGER)) {
+					isTriggered = true;
+					break;
+				}
 			}
 		}
 		
 		public function prepareCalculated():void {
 			if (this.activationMode == MODE_INTERACTIVE) return;
-			_value = 0;
+			if (!calculated)
+			{
+				_value = 0;
+			}
 			var l:int = outputs.length;
 			for (var i:int = 0; i < l; i++) {
 				if (outputs[i] is StateConnection) {

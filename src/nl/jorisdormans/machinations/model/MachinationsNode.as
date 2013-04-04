@@ -181,6 +181,8 @@ package nl.jorisdormans.machinations.model
 			var inh:Boolean = false;
 			var livingInputs:int = 0;
 			var l:int = inputs.length; 
+			var pullRequests:int = 0;
+			
 			for (var i:int; i < l; i++) {
 				if (inputs[i] is StateConnection && (inputs[i] as StateConnection).label.type != Label.TYPE_TRIGGER && !((inputs[i] as StateConnection).start is Gate) && (inputs[i] as StateConnection).inhibited) {
 					inh = true;
@@ -191,6 +193,10 @@ package nl.jorisdormans.machinations.model
 				if (inputs[i] is ResourceConnection && !(inputs[i] as ResourceConnection).inhibited) {
 					livingInputs++;
 				}
+				
+				if (inputs[i] is ResourceConnection && (inputs[i] as ResourceConnection).requestQueue != null && (inputs[i] as ResourceConnection).requestQueue.length>0) {
+					pullRequests++;
+				}
 			}
 			
 			if (livingInputs == 0) {
@@ -200,6 +206,9 @@ package nl.jorisdormans.machinations.model
 					//if (this.toString() != "[object Source]" && !(this is EndCondition) && !(this is ArtificialPlayer) && !(this is Gate)) inh = true;
 				}
 			}
+			
+			if (pullRequests > 0) inh = false;
+			
 			inhibited = inh;
 		}
 		
@@ -316,6 +325,8 @@ package nl.jorisdormans.machinations.model
 		
 		public function satisfy():void {
 			//to be overridden
+			checkInhibition();
+			
 		}
 		
 		public function receiveResource(color:uint, flow:ResourceConnection):void {

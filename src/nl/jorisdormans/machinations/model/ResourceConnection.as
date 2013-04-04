@@ -140,6 +140,11 @@ package nl.jorisdormans.machinations.model
 						if (i==0) blocked = Math.min((graph as MachinationsGraph).fireInterval * 0.75, 0.5);						
 						pool.overPulled = true;
 					}
+					if (justPulled == 0)
+					{
+					   //nothing is pulled cancel the pull request in queue
+					   requestQueue.splice(requestQueue.length - 1, 1);
+					}
 					return false;
 				}
 				pool.checkInhibition();
@@ -158,7 +163,6 @@ package nl.jorisdormans.machinations.model
 				if (color == pool.color) c = 0x01000000;
 				else c = color;
 				if (pool.canRemoveResource(c, amount)) {
-					trace("can pull", amount);
 					return true;
 				}
 				
@@ -195,12 +199,14 @@ package nl.jorisdormans.machinations.model
 				if (start is MachinationsNode && (start as MachinationsNode).inhibited) {
 					inh = true;
 				}
+				//Disabled these checks to prevent unwanted (and seemingly random) inhibiting of resource connections at the start of a session
+				/*
 				if (end is Drain && !(end as Drain).canDrain()) {
 					inh = true;
 				}
 				if (end is Converter && !(end as Converter).canDrain()) {
 					inh = true;
-				}
+				}*/
 				if (resources.length > 0) inh = false;
 			}
 			inhibited = inh;

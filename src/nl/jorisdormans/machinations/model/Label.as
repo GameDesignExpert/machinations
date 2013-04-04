@@ -36,7 +36,7 @@ package nl.jorisdormans.machinations.model
 		public var drawRandom:Boolean = false;
 		
 		private var multiplier:int;
-		private var originalMutliplier:int;
+		private var originalMultiplier:int;
 		
 		public var generatedValues:Vector.<Number>;
 		
@@ -47,6 +47,7 @@ package nl.jorisdormans.machinations.model
 		public static const TYPE_CHANGE_INTERVAL:String = "change_interval";
 		public static const TYPE_CHANGE_PROBABILITY:String = "change_probability";
 		public static const TYPE_CHANGE_MULTIPLIER:String = "change_multiplier";
+		public static const TYPE_CHANGE_CAPACITY:String = "change_capacity";
 		public static const TYPE_PROBABILITY:String = "probability";
 		public static const TYPE_PROBABILITY_DYNAMIC:String = "probability_dynamic";
 		public static const TYPE_EQUAL_TO:String = "equal_to";
@@ -91,7 +92,7 @@ package nl.jorisdormans.machinations.model
 			rest = 0;
 			drawRandom = false;
 			multiplier = -1;
-			originalMutliplier = multiplier;
+			originalMultiplier = multiplier;
 		}
 		
 		public function pointInModifier(x:Number, y:Number):Boolean {
@@ -119,6 +120,7 @@ package nl.jorisdormans.machinations.model
 				case TYPE_CHANGE_VALUE:
 				case TYPE_CHANGE_PROBABILITY:
 				case TYPE_CHANGE_MULTIPLIER:
+				case TYPE_CHANGE_CAPACITY:
 				case TYPE_ALL:
 				case TYPE_LESS:
 				case TYPE_LESS_OR_EQUAL:
@@ -156,7 +158,7 @@ package nl.jorisdormans.machinations.model
 			}
 			_value = 0;
 			var m:int = multiplier;
-			if (originalMutliplier<0) { 
+			if (originalMultiplier<0) { 
 				m = 1;
 			}
 			
@@ -176,6 +178,7 @@ package nl.jorisdormans.machinations.model
 							_value += v;
 							generatedValues.push(v);
 						}
+						break;
 					case TYPE_CALCULATED_VALUE:
 						v = MachinationsExpression.evaluatePostFix(postFix);
 						v += inputStateValue;
@@ -224,22 +227,20 @@ package nl.jorisdormans.machinations.model
 				case TYPE_ALL:
 					if (connection.start is Pool) {
 						if ((connection.start as Pool).color != connection.color) {
-							return Math.max(0, Math.max(min, (Math.min(max, (connection.start as Pool).resourceColorCount(connection.color)))));
+							_value = Math.max(0, Math.max(min, (Math.min(max, (connection.start as Pool).resourceColorCount(connection.color)))));
 						} else {
-							return Math.max(0, Math.max(min, (Math.min(max, (connection.start as Pool).resourceCount))));
+							_value = Math.max(0, Math.max(min, (Math.min(max, (connection.start as Pool).resourceCount))));
 						}
+						generatedValues.push(_value);
+						return _value;
 					}
 					return 0;
-				//case TYPE_DRAW:
-				//	return Math.max(min, (Math.min(max, _value + inputStateValue)));
 				case TYPE_CHANGE_VALUE:
 				case TYPE_CHANGE_INTERVAL:
 				case TYPE_CHANGE_PROBABILITY:
 					var v:Number = _value + inputStateValue;
 					return Math.max(min, (Math.min(max, v)));
 				default:
-					//var v:Number = _value + inputStateValue;
-					//return v;
 					return Math.max(min, (Math.min(max, _value)));
 			}
 		}
@@ -331,6 +332,13 @@ package nl.jorisdormans.machinations.model
 						if (v < 0) t = (StringUtil.floatToStringMaxPrecision(v, MAX_MULTIPLIER_DIGIT) + "m");
 						else t = ("+" + StringUtil.floatToStringMaxPrecision(v, MAX_MULTIPLIER_DIGIT) + "m");
 						break;
+					case TYPE_CHANGE_CAPACITY:
+						//v = _changeValue + inputStateValue;
+						v = _value + inputStateValue;
+						v = Math.max(min, (Math.min(max, v)));
+						if (v < 0) t = (StringUtil.floatToStringMaxPrecision(v, MAX_MULTIPLIER_DIGIT) + "c");
+						else t = ("+" + StringUtil.floatToStringMaxPrecision(v, MAX_MULTIPLIER_DIGIT) + "c");
+						break;
 					case TYPE_EQUAL_TO:
 						v = _value + inputStateValue;
 						v = Math.max(min, (Math.min(max, v)));
@@ -375,7 +383,7 @@ package nl.jorisdormans.machinations.model
 			t += getIntervalText();
 			if (drawRandom && t.substr(0, 4) != "draw") t = "draw" + t;
 			
-			if (originalMutliplier >= 0) {
+			if (originalMultiplier >= 0) {
 				t = multiplier.toString() + "*" + t;
 			}
 			return t;
@@ -464,7 +472,7 @@ package nl.jorisdormans.machinations.model
 			} else {
 				multiplier = -1;
 			}
-			originalMutliplier = multiplier;
+			originalMultiplier = multiplier;
 			
 			p = text.indexOf("/");
 			if (p >= 0) {
@@ -532,7 +540,7 @@ package nl.jorisdormans.machinations.model
 			} else if (text.substr(0, 1) == ">") {
 				type = TYPE_GREATER;
 				_value = parseFloat(text.substr(1));
-			} else if (connection.start is Gate && text.indexOf("-")>0) {
+			} else if ((connection.start is Gate || connection is StateConnection) && text.indexOf("-")>0) {
 				type = TYPE_RANGE;
 				p = text.indexOf("-");
 				_value = parseFloat(text.substr(0, p));
@@ -542,6 +550,11 @@ package nl.jorisdormans.machinations.model
 				p = text.indexOf("m");
 				if (p >= 0) {
 					type = TYPE_CHANGE_MULTIPLIER;
+					text = text.substr(0, p);
+				}
+				p = text.indexOf("c");
+				if (p >= 0) {
+					type = TYPE_CHANGE_CAPACITY;
 					text = text.substr(0, p);
 				}
 				p = text.indexOf("i");
@@ -570,12 +583,13 @@ package nl.jorisdormans.machinations.model
 				}
 			}
 			
+			//trace("Label " + this.text + " is a " + type+" of value",_value);
 		}
 		
 		public function stop():void {
 			inputStateValue = 0;
 			inputStateInterval = 0;
-			multiplier = originalMutliplier;
+			multiplier = originalMultiplier;
 		}
 		
 		public function modify(delta:Number):void {

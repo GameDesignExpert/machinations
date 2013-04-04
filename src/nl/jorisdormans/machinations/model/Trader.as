@@ -17,6 +17,11 @@ package nl.jorisdormans.machinations.model
 		override public function fire():void 
 		{
 			//super.fire();
+			var l:int = inputs.length; 
+			for (var i:int; i < l; i++) {
+				if (inputs[i] is StateConnection && (inputs[i] as StateConnection).inhibited) return; 
+			}	
+
 			setFiring();
 			pull();
 		}
@@ -57,6 +62,8 @@ package nl.jorisdormans.machinations.model
 		{
 			if (actAsConverter) {
 				super.satisfy();
+			} else {
+				checkInhibition();
 			}
 			
 			if (!_inhibited) {

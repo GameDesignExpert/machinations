@@ -14,19 +14,25 @@ package nl.jorisdormans.machinations.model
 		override public function fire():void 
 		{
 			//super.fire();
+			//check if I really can fire
+			var l:int = inputs.length; 
+			for (var i:int; i < l; i++) {
+				if (inputs[i] is StateConnection && (inputs[i] as StateConnection).inhibited) return; 
+			}	
+			
 			setFiring();
 			pull();
 		}
 		
 		override public function satisfy():void 
 		{
-			super.satisfy();
 			if (!_inhibited) {
 				var l:int = outputs.length;
 				for (var i:int = 0; i < l; i++) {
 					if (outputs[i] is StateConnection) (outputs[i] as StateConnection).fire();
 				}
 			}
+			super.satisfy();
 		}
 		
 		override public function get inhibited():Boolean { return super.inhibited; }

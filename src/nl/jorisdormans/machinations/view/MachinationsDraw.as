@@ -154,9 +154,9 @@ package nl.jorisdormans.machinations.view
 			if (activationType == MachinationsNode.MODE_AUTOMATIC) PhantomFont.drawText("*", graphics, x + size*1.1, y - size *0.8+6, 12, PhantomFont.ALIGN_CENTER);
 			if (activationType == MachinationsNode.MODE_ONSTART) PhantomFont.drawText("s", graphics, x + size * 1.1, y - size * 0.8 + 3, 10, PhantomFont.ALIGN_CENTER);
 			if (pullMode == MachinationsNode.PULL_MODE_PULL_ALL) PhantomFont.drawText("&", graphics, x + size*1.1, y + size *0.8+3, 10, PhantomFont.ALIGN_CENTER);
-			if (pullMode == MachinationsNode.PULL_MODE_PUSH_ANY && flowInputCount>0) PhantomFont.drawText("p", graphics, x + size*1.1, y + size *0.8+3, 10, PhantomFont.ALIGN_CENTER);
-			if (pullMode == MachinationsNode.PULL_MODE_PUSH_ALL && flowInputCount>0) PhantomFont.drawText("p&", graphics, x + size*1.1 + 4, y + size *0.8+3, 10, PhantomFont.ALIGN_CENTER);
-			if (pullMode == MachinationsNode.PULL_MODE_PUSH_ALL && flowInputCount==0) PhantomFont.drawText("&", graphics, x + size*1.1 + 4, y + size *0.8+3, 10, PhantomFont.ALIGN_CENTER);
+			if (pullMode == MachinationsNode.PULL_MODE_PUSH_ANY && flowInputCount > 0 && activationType != MachinationsNode.MODE_PASSIVE) PhantomFont.drawText("p", graphics, x + size*1.1, y + size *0.8+3, 10, PhantomFont.ALIGN_CENTER);
+			if (pullMode == MachinationsNode.PULL_MODE_PUSH_ALL && flowInputCount>0 && activationType != MachinationsNode.MODE_PASSIVE) PhantomFont.drawText("p&", graphics, x + size*1.1 + 4, y + size *0.8+3, 10, PhantomFont.ALIGN_CENTER);
+			if (pullMode == MachinationsNode.PULL_MODE_PUSH_ALL && (flowInputCount==0 || activationType == MachinationsNode.MODE_PASSIVE)) PhantomFont.drawText("&", graphics, x + size*1.1 + 4, y + size *0.8+3, 10, PhantomFont.ALIGN_CENTER);
 			graphics.lineStyle();
 		}
 		
@@ -166,9 +166,9 @@ package nl.jorisdormans.machinations.view
 			if (activationType == MachinationsNode.MODE_AUTOMATIC) PhantomFont.drawTextToSVG("*", svg, x + size*1.1, y - size*0.8+14, 18, PhantomFont.ALIGN_CENTER, StringUtil.toColorStringSVG(colorFill), StringUtil.toColorStringSVG(colorLine), thickness);
 			if (activationType == MachinationsNode.MODE_ONSTART) PhantomFont.drawTextToSVG("s", svg, x + size*1.1, y - size*0.8+3, 10, PhantomFont.ALIGN_CENTER, StringUtil.toColorStringSVG(colorFill), StringUtil.toColorStringSVG(colorLine), thickness);
 			if (pullMode == MachinationsNode.PULL_MODE_PULL_ALL) PhantomFont.drawTextToSVG("&", svg, x + size*1.1, y + size*0.8+3, 10, PhantomFont.ALIGN_CENTER, StringUtil.toColorStringSVG(colorFill), StringUtil.toColorStringSVG(colorLine), thickness);
-			if (pullMode == MachinationsNode.PULL_MODE_PUSH_ANY && flowInputCount>0) PhantomFont.drawTextToSVG("p", svg, x + size*1.1, y + size*0.8+3, 10, PhantomFont.ALIGN_CENTER, StringUtil.toColorStringSVG(colorFill), StringUtil.toColorStringSVG(colorLine), thickness);
-			if (pullMode == MachinationsNode.PULL_MODE_PUSH_ALL && flowInputCount>0) PhantomFont.drawTextToSVG("p&", svg, x + size*1.1 + 4, y + size*0.8+3, 10, PhantomFont.ALIGN_CENTER, StringUtil.toColorStringSVG(colorFill), StringUtil.toColorStringSVG(colorLine), thickness);
-			if (pullMode == MachinationsNode.PULL_MODE_PUSH_ALL && flowInputCount == 0) PhantomFont.drawTextToSVG("&", svg, x + size*1.1 + 4, y + size*0.8+3, 10, PhantomFont.ALIGN_CENTER, StringUtil.toColorStringSVG(colorFill), StringUtil.toColorStringSVG(colorLine), thickness);
+			if (pullMode == MachinationsNode.PULL_MODE_PUSH_ANY && flowInputCount>0 && activationType != MachinationsNode.MODE_PASSIVE) PhantomFont.drawTextToSVG("p", svg, x + size*1.1, y + size*0.8+3, 10, PhantomFont.ALIGN_CENTER, StringUtil.toColorStringSVG(colorFill), StringUtil.toColorStringSVG(colorLine), thickness);
+			if (pullMode == MachinationsNode.PULL_MODE_PUSH_ALL && flowInputCount>0 && activationType != MachinationsNode.MODE_PASSIVE) PhantomFont.drawTextToSVG("p&", svg, x + size*1.1 + 4, y + size*0.8+3, 10, PhantomFont.ALIGN_CENTER, StringUtil.toColorStringSVG(colorFill), StringUtil.toColorStringSVG(colorLine), thickness);
+			if (pullMode == MachinationsNode.PULL_MODE_PUSH_ALL && (flowInputCount==0 || activationType == MachinationsNode.MODE_PASSIVE)) PhantomFont.drawTextToSVG("&", svg, x + size*1.1 + 4, y + size*0.8+3, 10, PhantomFont.ALIGN_CENTER, StringUtil.toColorStringSVG(colorFill), StringUtil.toColorStringSVG(colorLine), thickness);
 		}
 		
 		/////////////////////////////  GATE  ////////////////////////////////////////

@@ -43,12 +43,12 @@ package nl.jorisdormans.machinations.model
 		
 		override public function satisfy():void 
 		{
-			super.satisfy();
 			var l:int = outputs.length; 
 			for (var i:int = 0; i < l; i++) {
 				if (outputs[i] is ResourceConnection && !(outputs[i] as ResourceConnection).inhibited) (outputs[i] as ResourceConnection).produce(this);
 				if (outputs[i] is StateConnection) (outputs[i] as StateConnection).fire();
 			}
+			super.satisfy();
 		}
 		
 	}
