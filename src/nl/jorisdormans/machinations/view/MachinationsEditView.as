@@ -183,6 +183,7 @@ package nl.jorisdormans.machinations.view
 			new PhantomButton("Save (S)", saveGraph, panelFile, tbx, tby, controlW); tby += 28;
 			new PhantomButton("Export Selection (E)", saveSelection, panelFile, tbx, tby, controlW); tby += 28;
 			new PhantomButton("Save as SVG (G)", saveAsSVG, panelFile, tbx, tby, controlW); tby += 28;
+			new PhantomButton("Save as MM", saveAsMM, panelFile, tbx, tby, controlW); tby += 28;
 
 			//editPanel
 			//tbx = (editPanelWidth - 88) * 0.5;
@@ -301,6 +302,31 @@ package nl.jorisdormans.machinations.view
 		{
 			fileIOImport.data = generateSelectionXML();
 			fileIOImport.saveFileDialog("Save Selection");
+		}
+		
+		private function saveAsMM(sender:PhantomButton):void
+		{
+			var str : String = "";
+			
+			
+			for (var i:int = 0; i < graph.elements.length; i++)
+			{
+				graph.elements[i].id = i;
+			}
+			for (var i:int = 0; i < graph.elements.length; i++)
+			{
+				var line:String = graph.elements[i].toMMString();
+				line = StringUtil.trim(line);
+				if (line.length>0)
+					str +=  line+ "\n";
+			}
+			
+			fileIOSVG.data = null;
+			fileIOSVG.textData = str;
+			if (fileIOSVG.fileName != "") fileIOSVG.saveFile(fileIOSVG.fileName);
+			else if (fileIO.fileName != "") fileIOSVG.saveFile(StringUtil.setFileExtention(fileIO.fileName, "mm"));
+			else fileIOSVG.saveFile("new_diagram.mm");
+			
 		}
 		
 		private function saveAsSVG(sender:PhantomButton):void

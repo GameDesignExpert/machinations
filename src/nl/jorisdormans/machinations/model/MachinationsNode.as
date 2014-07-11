@@ -433,7 +433,76 @@ package nl.jorisdormans.machinations.model
 			}
 		}
 		
+		override public function getMMName():String 
+		{
+			if (caption == "" || !caption)
+				return super.getMMName();
+			else
+				return caption;
+		}
 		
+		public function getMMWhen(): String
+		{
+			var when:String = "";
+			switch(activationMode)
+			{
+				case MODE_PASSIVE:
+					when = "";
+					break;
+				case MODE_AUTOMATIC:
+					when = "auto";
+					break;
+				case MODE_INTERACTIVE:
+					when = "user";
+				    break;
+				case MODE_ONSTART:
+					when = "start";
+					break;				
+			}
+		    return when;
+		}
+		
+		public function getMMAct():String
+		{
+		    var act:String = "";
+			switch(pullMode)
+			{
+			    case PULL_MODE_PULL_ALL:
+					act = "pull";
+				    break;
+				case PULL_MODE_PULL_ANY:
+					act = "pull";
+				    break;
+				case PULL_MODE_PUSH_ALL:
+					act = "push";
+					break;
+				case PULL_MODE_PUSH_ANY:
+					act = "push";
+					break;
+			}
+			return act;
+		}
+		
+		public function getMMHow():String
+		{
+			var how:String = "";
+			switch(pullMode)
+			{
+			    case PULL_MODE_PULL_ALL:
+					how = "all";
+				    break;
+				case PULL_MODE_PULL_ANY:
+					how = "any";
+				    break;
+				case PULL_MODE_PUSH_ALL:
+					how = "all";
+					break;
+				case PULL_MODE_PUSH_ANY:
+					how = "any";
+					break;
+			}
+			return how;
+		}
 		
 	}
 

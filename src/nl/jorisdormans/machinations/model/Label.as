@@ -703,6 +703,20 @@ package nl.jorisdormans.machinations.model
 			}
 		}
 		
+		public function getMMText():String
+		{
+			//TODO: solve hyperedge problem.
+			
+			if (this.connection.inputs.length==0)
+				return text;
+			
+			var str:String = text;
+			
+			str += this.connection.getMMExp();
+			
+			return str;
+		}
+		
 	}
 
 }

@@ -69,9 +69,6 @@ package nl.jorisdormans.graph
 			position.y = xml.@y;
 		}
 		
-
-		
-		
 	}
 
 }

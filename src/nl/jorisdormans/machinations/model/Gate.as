@@ -353,6 +353,11 @@ package nl.jorisdormans.machinations.model
 			}
 		}
 		
+		override public function toMMString():String {
+			var str : String = getMMWhen() + " " + getMMAct() + " " + getMMHow() + " gate " + this.getMMName();
+			return str;
+		}
+		
 	}
 
 }

@@ -410,6 +410,25 @@ package nl.jorisdormans.machinations.model
 			}
 		}
 		
+		override public function toMMString():String {
+			
+			var str : String = getMMWhen() + " " + getMMAct() + " " + getMMHow() + " pool " + this.getMMName() + " at " + this.startingResources;
+			
+			var addExp = getMMExp();			
+			if (addExp != "")
+			{
+			  str += " add 0" + addExp;
+			}
+			
+			if (this.startingCapacity != 0)
+			{
+				str + " max " + this.startingCapacity;
+			}
+
+			
+			return str;
+		}
+
 	}
 
 }

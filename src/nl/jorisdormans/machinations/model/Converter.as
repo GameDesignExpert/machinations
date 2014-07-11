@@ -74,6 +74,12 @@ package nl.jorisdormans.machinations.model
 			return true;
 		}
 		
+		
+		override public function toMMString():String {
+			var str : String = getMMWhen() + " " + getMMAct() + " " + getMMHow() + " converter " + this.getMMName();
+			return str;
+		}
+		
 	}
 
 }

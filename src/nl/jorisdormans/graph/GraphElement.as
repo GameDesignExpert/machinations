@@ -3,6 +3,9 @@ package nl.jorisdormans.graph
 	import flash.display.Graphics;
 	import flash.events.EventDispatcher;
 	import flash.geom.Vector3D;
+	import nl.jorisdormans.machinations.model.Label;
+	import nl.jorisdormans.machinations.model.Pool;
+	import nl.jorisdormans.machinations.model.StateConnection;
 	/**
 	 * ...
 	 * @author Joris Dormans
@@ -97,7 +100,40 @@ package nl.jorisdormans.graph
 			//to be overriden
 		}
 		
+		public function toMMString():String {
+			//override me
+			return "";
+		}
 		
+		public function getMMName():String
+		{
+			return "element"+id;
+		}
+		
+		public function getMMExp():String
+		{
+			var exp:String = "";
+			for (var i:int = 0; i < this.inputs.length; i++)
+			{
+				var con:StateConnection = this.inputs[i] as StateConnection;
+				if (con)
+				switch (con.label.type)
+				{
+					case Label.TYPE_CHANGE_VALUE:
+						var value:String = con.start.getMMName();
+						var p:Pool = con.start  as Pool;
+						if (p && p.startingResources > 0)
+							value = "(" + value+"-" + p.startingResources+")";
+						if (p && p.startingResources < 0)
+							value = "(" + value+"+" + Math.abs(p.startingResources)+")";
+							
+						exp += con.label.text + "*" + con.start.getMMName();
+						break;
+				}
+			}
+			
+			return exp;
+		}
 		
 		
 	}

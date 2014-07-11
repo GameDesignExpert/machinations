@@ -258,6 +258,15 @@ package nl.jorisdormans.machinations.model
 			}
 		}
 		
+		override public function toMMString():String 
+		{
+			var str:String = this.getMMName()+": ";
+			str += this.start.getMMName();
+			str += " -" + this.label.getMMText() + "-> ";
+			str += this.end.getMMName();
+			
+			return str;
+		}
 		
 	}
 

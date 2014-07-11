@@ -51,6 +51,11 @@ package nl.jorisdormans.machinations.model
 			super.satisfy();
 		}
 		
+		override public function toMMString():String {
+			var str : String = getMMWhen() + " " + getMMAct() + " " + getMMHow() + " source " + this.getMMName();
+			return str;
+		}
+
 	}
 
 }

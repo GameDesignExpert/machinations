@@ -1,5 +1,6 @@
 package nl.jorisdormans.machinations.model 
 {
+	import nl.jorisdormans.graph.GraphConnection;
 	import nl.jorisdormans.graph.GraphEvent;
 	/**
 	 * ...
@@ -177,7 +178,27 @@ package nl.jorisdormans.machinations.model
 			}
 		}
 		
+		override public function toMMString():String 
+		{
+			if (end is GraphConnection) //it is a hyperedge!
+				return "";
+				
+			var expression:String = label.type;
+			
+			switch (label.type)
+			{
+				case Label.TYPE_CHANGE_VALUE:
+					return "";
+				case Label.TYPE_TRIGGER:
+					expression = "*";
+					break;
+			}
+			
+			return this.getMMName() + ": " + this.start.getMMName() + " ." + expression + ".> " + this.end.getMMName();
+			
+		}
 		
+	
 		
 	}
 
